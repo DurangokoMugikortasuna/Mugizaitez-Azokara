@@ -1,0 +1,5 @@
+const CACHE='azokara-v25';
+const HOME=new URL('./index.html',self.location.href).href;
+self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.add(new Request(HOME,{cache:'reload'}))).then(()=>self.skipWaiting()));});
+self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('azokara-')&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));});
+self.addEventListener('fetch',event=>{if(event.request.method!=='GET'||event.request.mode!=='navigate')return;const u=new URL(event.request.url);if(u.origin!==self.location.origin||!(u.pathname===new URL(HOME).pathname||u.pathname===new URL('./',HOME).pathname))return;event.respondWith(fetch(event.request).then(async response=>{if(!response.ok)throw new Error("HTTP "+response.status);if(response.ok){const c=await caches.open(CACHE);await c.put(HOME,response.clone());}return response;}).catch(()=>caches.match(HOME).then(r=>r||Response.error())));});
