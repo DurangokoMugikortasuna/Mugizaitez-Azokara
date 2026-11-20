@@ -1,4 +1,4 @@
-const CACHE='azokara-v54';
+const CACHE='azokara-v55';
 const HOME=new URL('./index.html',self.location.href).href;
 const ROOT=new URL('./',HOME).href;
 const PHOTO_CACHE='azoka-photos-v1';
